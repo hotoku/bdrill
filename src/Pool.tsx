@@ -11,9 +11,9 @@ type TableProps = {
 function Table({ cueBall, objectBall }: TableProps): React.ReactElement {
   return (
     <PoolBase>
-      <Pool src="/pool.svg" />
-      <Ball $x={cueBall.x} $y={cueBall.y} src="/cue-ball.svg" />
-      <Ball $x={objectBall.x} $y={objectBall.y} src="/object-ball.svg" />
+      <Pool src="/bdrill/pool.svg" />
+      <Ball $x={cueBall.x} $y={cueBall.y} src="/bdrill/cue-ball.svg" />
+      <Ball $x={objectBall.x} $y={objectBall.y} src="/bdrill/object-ball.svg" />
     </PoolBase>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Table from "./Pool";
 import styled from "styled-components";
 import { poolDimension } from "./poolDimension";
@@ -11,6 +11,10 @@ function App(): React.ReactElement {
   const [idx, setIdx] = useState(0);
   const { cue, object } = exs[idx];
   const exerciseData = load();
+  useEffect(() => {
+    const n = Math.floor(Math.random() * exs.length);
+    setIdx(n);
+  }, [exs.length]);
   return (
     <>
       <Field>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Table from "./Pool";
 import styled from "styled-components";
 import { poolDimension } from "./poolDimension";
@@ -11,10 +11,14 @@ function App(): React.ReactElement {
   const [idx, setIdx] = useState(0);
   const { cue, object } = exs[idx];
   const exerciseData = load();
-  useEffect(() => {
+  const upadte = useCallback(() => {
     const n = Math.floor(Math.random() * exs.length);
     setIdx(n);
-  }, [exs.length]);
+  }, [exs.length, setIdx]);
+  useEffect(() => {
+    upadte();
+  }, [upadte]);
+
   return (
     <>
       <Field>
@@ -24,18 +28,9 @@ function App(): React.ReactElement {
           objectBall={object}
           exerciseData={exerciseData}
           exIndex={idx}
+          update={upadte}
         />
       </Field>
-      <div>
-        <button
-          onClick={() => {
-            const n = Math.floor(Math.random() * exs.length);
-            setIdx(n);
-          }}
-        >
-          next
-        </button>
-      </div>
     </>
   );
 }

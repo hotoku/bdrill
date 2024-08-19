@@ -8,6 +8,7 @@ type ControlProps = {
   objectBall: Position;
   exIndex: number;
   exerciseData: ExerciseData;
+  update: () => void;
 };
 
 const shotPerTrial = 5;
@@ -17,6 +18,7 @@ function Control({
   objectBall,
   exIndex,
   exerciseData,
+  update,
 }: ControlProps): React.ReactElement {
   const [success, setSuccess] = useState(0);
   const handleSave = () => {
@@ -32,6 +34,8 @@ function Control({
         };
     const newData = { ...exerciseData, [exIndex]: newRecord };
     save(newData);
+    setSuccess(0);
+    update();
   };
 
   return (
@@ -62,6 +66,9 @@ function Control({
           / {shotPerTrial}
         </div>
         <SaveButton onClick={handleSave}>Save</SaveButton>
+        <div>
+          <NextButton onClick={update}>Next</NextButton>
+        </div>
       </RecordPanel>
     </Body>
   );
@@ -90,5 +97,9 @@ const RecordInput = styled.input`
   width: 4rem;
 `;
 const SaveButton = styled.button`
+  margin-top: var(--small-gap);
+`;
+
+const NextButton = styled.button`
   margin-top: var(--small-gap);
 `;

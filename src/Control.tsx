@@ -1,13 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Position } from "./types";
+import { ExerciseData, Position } from "./types";
+import { save } from "./storage";
 
 type ControlProps = {
   cueBall: Position;
   objectBall: Position;
+  exIndex: number;
+  exerciseData: ExerciseData;
 };
 
-function Control({ cueBall, objectBall }: ControlProps): React.ReactElement {
+const shotPerTrial = 5;
+
+function Control({
+  cueBall,
+  objectBall,
+  exIndex,
+  exerciseData,
+}: ControlProps): React.ReactElement {
+  const [success, setSuccess] = useState(0);
+  const handleSave = () => {
+    const record = exerciseData[exIndex];
+    const newRecord = record
+      ? {
+          success: record.success + success,
+          trial: record.trial + shotPerTrial,
+        }
+      : {
+          success: success,
+          trial: shotPerTrial,
+        };
+    const newData = { ...exerciseData, [exIndex]: newRecord };
+    save(newData);
+  };
+
   return (
     <Body>
       <BallInfo className="info">
@@ -22,6 +48,21 @@ function Control({ cueBall, objectBall }: ControlProps): React.ReactElement {
         <br />
         y={objectBall.y}
       </BallInfo>
+      <RecordPanel className="info">
+        <div>
+          <RecordInput
+            type="number"
+            min={0}
+            max={shotPerTrial}
+            value={success}
+            onChange={(e) => {
+              setSuccess(parseInt(e.target.value));
+            }}
+          />{" "}
+          / {shotPerTrial}
+        </div>
+        <SaveButton onClick={handleSave}>Save</SaveButton>
+      </RecordPanel>
     </Body>
   );
 }
@@ -43,3 +84,11 @@ const Body = styled.div`
 
 const BallInfo = styled.div``;
 const BallName = styled.div``;
+const RecordPanel = styled.div``;
+const RecordInput = styled.input`
+  display: inline-block;
+  width: 4rem;
+`;
+const SaveButton = styled.button`
+  margin-top: var(--small-gap);
+`;

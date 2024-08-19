@@ -4,7 +4,12 @@ export const poolDimension = {
   ballDiameter: 300 / 22,
 };
 
-export function translate(v: number): number {
+export function translateX(v: number): number {
+  const one = poolDimension.width / 4;
+  return one * v - poolDimension.ballDiameter / 2;
+}
+
+export function translateY(v: number): number {
   const one = poolDimension.width / 4;
   return one * v - poolDimension.ballDiameter / 2;
 }

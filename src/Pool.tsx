@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Position } from "./types";
-import { poolDimension, translate } from "./poolDimension";
+import { poolDimension, translateX, translateY } from "./poolDimension";
 
 type TableProps = {
   cueBall: Position;
@@ -22,7 +22,7 @@ export default Table;
 
 const Pool = styled.img`
   width: ${poolDimension.width}px;
-  height: auto;
+  height: ${poolDimension.height}px;
 `;
 
 const PoolBase = styled.div`
@@ -32,7 +32,7 @@ const PoolBase = styled.div`
 const Ball = styled.img<{ $x: number; $y: number }>`
   position: absolute;
   width: ${poolDimension.ballDiameter}px;
-  height: auto;
-  top: ${(props) => translate(props.$y)}px;
-  left: ${(props) => translate(props.$x)}px;
+  height: ${poolDimension.ballDiameter}px;
+  top: ${(props) => translateY(props.$y)}px;
+  left: ${(props) => translateX(props.$x)}px;
 `;

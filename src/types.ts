@@ -3,7 +3,8 @@ export type Position = {
   y: number;
 };
 
-export type Excercise = {
+export type Exercise = {
+  id: number;
   cue: Position;
   object: Position;
 };
@@ -11,8 +12,4 @@ export type Excercise = {
 export type ExerciseReord = {
   success: number;
   trial: number;
-};
-
-export type ExerciseData = {
-  [key: number]: ExerciseReord;
 };

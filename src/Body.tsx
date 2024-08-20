@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Table from "./Pool";
 import styled from "styled-components";
 import { poolDimension } from "./poolDimension";
 import Control, { controlWidth } from "./Control";
-import { generateAll } from "./drills";
 import { load } from "./storage";
+import useExercises from "./useExercise";
 
 function Body(): React.ReactElement {
-  const exs = useMemo(generateAll, []);
+  const exs = useExercises();
   const [idx, setIdx] = useState(0);
   const { cue, object } = exs[idx];
   const exerciseData = load();

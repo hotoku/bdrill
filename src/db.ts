@@ -4,6 +4,7 @@ import sqlite3InitModule, {
 } from "@sqlite.org/sqlite-wasm";
 import { z } from "zod";
 import { generateAll } from "./drills";
+import { Exercise } from "./types";
 
 const log = (...args: any[]) => console.log(...args); // eslint-disable-line
 const error = (...args: any[]) => console.error(...args); // eslint-disable-line
@@ -13,7 +14,7 @@ let db: Database | null = null;
 function connectDB(sqlite3: Sqlite3Static): Database {
   log("Running SQLite3 version", sqlite3.version.libVersion);
   log(`DB size: ${sqlite3.capi.sqlite3_js_kvvfs_size()}`);
-  return new sqlite3.oo1.DB("file:local?vfs=kvvfs", "ct");
+  return new sqlite3.oo1.DB("file:local?vfs=kvvfs", "c");
 }
 
 export async function dbSize(): Promise<number> {
@@ -52,7 +53,7 @@ export async function getDatabase(): Promise<Database> {
   throw new Error("unknown error");
 }
 
-function createTable(db: Database): void {
+function createTables(db: Database): void {
   db.exec(`
     CREATE TABLE IF NOT EXISTS exercises (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,24 +74,66 @@ function createTable(db: Database): void {
   `);
 }
 
-export async function initDB(): Promise<void> {
-  const db = await getDatabase();
-  createTable(db);
+function numExercises(db: Database): number {
   const ret = db.exec({
     sql: "select count(1) as num from exercises",
     rowMode: "object",
     returnValue: "resultRows",
   });
-  const schema = z.object({ num: z.number() });
-  const num = schema.parse(ret).num;
-  if (num > 0) {
-    return;
-  }
+  const schema = z.array(z.object({ num: z.number() }));
+  const num = schema.parse(ret)[0].num;
+  return num;
+}
+
+function initExercises(db: Database): Promise<void> {
   const exs = generateAll();
-  for (const ex of exs) {
-    db.exec({
-      sql: "insert into exercises (cue_x, cue_y, object_x, object_y) values (?, ?, ?, ?)",
-      bind: [ex.cue.x, ex.cue.y, ex.object.x, ex.object.y],
-    });
+  return new Promise<void>((resolve) => {
+    console.log("inserting exercises");
+    let i = 0;
+    for (const ex of exs) {
+      i++;
+      if (i % 100 === 0) {
+        console.log("inserting exercise", i);
+      }
+      db.exec({
+        sql: "insert into exercises (cue_x, cue_y, object_x, object_y) values (?, ?, ?, ?)",
+        bind: [ex.cue.x, ex.cue.y, ex.object.x, ex.object.y],
+      });
+    }
+    resolve();
+  });
+}
+
+export async function initDB(): Promise<Database> {
+  const db = await getDatabase();
+  createTables(db);
+  const num = numExercises(db);
+  if (num > 0) {
+    return db;
   }
+  await initExercises(db);
+  return db;
+}
+
+export function loadExercises(db: Database): Exercise[] {
+  const ret = db.exec({
+    sql: "select * from exercises",
+    rowMode: "object",
+    returnValue: "resultRows",
+  });
+  const schema = z.array(
+    z.object({
+      id: z.number(),
+      cue_x: z.number(),
+      cue_y: z.number(),
+      object_x: z.number(),
+      object_y: z.number(),
+    })
+  );
+  const rows = schema.parse(ret);
+  return rows.map((row) => ({
+    id: row.id,
+    cue: { x: row.cue_x, y: row.cue_y },
+    object: { x: row.object_x, y: row.object_y },
+  }));
 }

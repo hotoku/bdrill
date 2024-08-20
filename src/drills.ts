@@ -1,4 +1,4 @@
-import { Excercise, Position } from "./types";
+import { Exercise, Position } from "./types";
 
 export function allGrids(): Position[] {
   const positions = [];
@@ -9,7 +9,7 @@ export function allGrids(): Position[] {
   }
   return positions;
 }
-export function generateAll(): Excercise[] {
+export function generateAll(): Exercise[] {
   const ret = [];
   const cue = allGrids();
   const object = allGrids();

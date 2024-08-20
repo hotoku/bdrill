@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { ExerciseData, Position } from "./types";
+import { Position } from "./types";
 import { save } from "./storage";
 
 type ControlProps = {
@@ -82,6 +82,7 @@ export const controlWidth = 100;
 const Body = styled.div`
   background-color: #f0f0f0;
   width: ${controlWidth}px;
+  height: 100%;
 
   margin-left: var(--basic-gap);
   padding: calc(var(--basic-gap) / 2);

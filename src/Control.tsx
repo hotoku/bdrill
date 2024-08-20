@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Position } from "./types";
-import { save } from "./storage";
 
 type ControlProps = {
   cueBall: Position;
   objectBall: Position;
   exIndex: number;
-  exerciseData: ExerciseData;
   update: () => void;
 };
 
@@ -16,27 +14,9 @@ const shotPerTrial = 5;
 function Control({
   cueBall,
   objectBall,
-  exIndex,
-  exerciseData,
   update,
 }: ControlProps): React.ReactElement {
   const [success, setSuccess] = useState(0);
-  const handleSave = () => {
-    const record = exerciseData[exIndex];
-    const newRecord = record
-      ? {
-          success: record.success + success,
-          trial: record.trial + shotPerTrial,
-        }
-      : {
-          success: success,
-          trial: shotPerTrial,
-        };
-    const newData = { ...exerciseData, [exIndex]: newRecord };
-    save(newData);
-    setSuccess(0);
-    update();
-  };
 
   return (
     <Body>
@@ -66,7 +46,7 @@ function Control({
           / {shotPerTrial}
         </div>
         <ButtonLine>
-          <SaveButton onClick={handleSave}>Save</SaveButton>
+          <SaveButton>Save</SaveButton>
         </ButtonLine>
         <ButtonLine>
           <NextButton onClick={update}>Next</NextButton>

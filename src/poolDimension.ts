@@ -11,5 +11,5 @@ export function translateX(v: number): number {
 
 export function translateY(v: number): number {
   const one = poolDimension.width / 4;
-  return one * v - poolDimension.ballDiameter / 2;
+  return poolDimension.height - one * v + poolDimension.ballDiameter / 2;
 }

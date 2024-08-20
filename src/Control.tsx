@@ -65,10 +65,12 @@ function Control({
           />{" "}
           / {shotPerTrial}
         </div>
-        <SaveButton onClick={handleSave}>Save</SaveButton>
-        <div>
+        <ButtonLine>
+          <SaveButton onClick={handleSave}>Save</SaveButton>
+        </ButtonLine>
+        <ButtonLine>
           <NextButton onClick={update}>Next</NextButton>
-        </div>
+        </ButtonLine>
       </RecordPanel>
     </Body>
   );
@@ -96,10 +98,8 @@ const RecordInput = styled.input`
   display: inline-block;
   width: 4rem;
 `;
-const SaveButton = styled.button`
+const ButtonLine = styled.div`
   margin-top: var(--small-gap);
 `;
-
-const NextButton = styled.button`
-  margin-top: var(--small-gap);
-`;
+const SaveButton = styled.button``;
+const NextButton = styled.button``;

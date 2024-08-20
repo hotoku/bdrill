@@ -15,6 +15,7 @@ function App(): React.ReactElement {
     const n = Math.floor(Math.random() * exs.length);
     setIdx(n);
   }, [exs.length, setIdx]);
+
   useEffect(() => {
     upadte();
   }, [upadte]);

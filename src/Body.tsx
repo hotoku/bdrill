@@ -3,14 +3,12 @@ import Table from "./Pool";
 import styled from "styled-components";
 import { poolDimension } from "./poolDimension";
 import Control, { controlWidth } from "./Control";
-import { load } from "./storage";
 import useExercises from "./useExercise";
 
 function Body(): React.ReactElement {
   const exs = useExercises();
   const [idx, setIdx] = useState(0);
   const { cue, object } = exs[idx];
-  const exerciseData = load();
   const upadte = useCallback(() => {
     const n = Math.floor(Math.random() * exs.length);
     setIdx(n);
@@ -27,7 +25,6 @@ function Body(): React.ReactElement {
         <Control
           cueBall={cue}
           objectBall={object}
-          exerciseData={exerciseData}
           exIndex={idx}
           update={upadte}
         />

@@ -9,7 +9,7 @@ export function allGrids(): Position[] {
   }
   return positions;
 }
-export function generateAll(): Exercise[] {
+export function generateAll(): Omit<Exercise, "id">[] {
   const ret = [];
   const cue = allGrids();
   const object = allGrids();

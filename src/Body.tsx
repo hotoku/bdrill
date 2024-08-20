@@ -27,7 +27,6 @@ function Body(): React.ReactElement {
         <Control
           cueBall={cue}
           objectBall={object}
-          exerciseData={exerciseData}
           exIndex={idx}
           update={upadte}
         />

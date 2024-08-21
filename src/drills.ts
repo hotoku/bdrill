@@ -9,12 +9,29 @@ export function allGrids(): Position[] {
   }
   return positions;
 }
+
+function aname(x: number, y: number): boolean {
+  return (
+    (x === 0 && (y === 0 || y == 4 || y == 8)) ||
+    (x === 4 && (y === 0 || y == 4 || y == 8))
+  );
+}
+
 export function generateAll(): Omit<Exercise, "id">[] {
   const ret = [];
   const cue = allGrids();
   const object = allGrids();
   for (const c of cue) {
     for (const o of object) {
+      if (c.x === o.x && c.y === o.y) {
+        continue;
+      }
+      if (o.y < 4) {
+        continue;
+      }
+      if (aname(o.x, o.y)) {
+        continue;
+      }
       ret.push({ cue: c, object: o });
     }
   }

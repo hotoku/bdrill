@@ -3,7 +3,7 @@ import styled from "styled-components";
 function Header() {
   return (
     <Area>
-      <h1>My App</h1>
+      <h1>BDRILL</h1>
     </Area>
   );
 }

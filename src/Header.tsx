@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 function Header() {
@@ -16,16 +17,7 @@ function Header() {
         </div>
         <ul className="menu">
           <li>
-            <a href="#">メニュー1</a>
-          </li>
-          <li>
-            <a href="#">メニュー2</a>
-          </li>
-          <li>
-            <a href="#">メニュー3</a>
-          </li>
-          <li>
-            <a href="#">メニュー4</a>
+            <Link to="/results">成績</Link>
           </li>
         </ul>
       </HamburgerMenu>

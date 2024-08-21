@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Position } from "./types";
+import { insertResult } from "./db";
 
 type ControlProps = {
   cueBall: Position;
@@ -17,6 +18,9 @@ function Control({
   update,
 }: ControlProps): React.ReactElement {
   const [success, setSuccess] = useState(0);
+  const handleSave = async () => {
+    insertResult(1, success, shotPerTrial);
+  };
 
   return (
     <Body>
@@ -46,7 +50,7 @@ function Control({
           / {shotPerTrial}
         </div>
         <ButtonLine>
-          <SaveButton>Save</SaveButton>
+          <SaveButton onClick={handleSave}>Save</SaveButton>
         </ButtonLine>
         <ButtonLine>
           <NextButton onClick={update}>Next</NextButton>

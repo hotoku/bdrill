@@ -22,7 +22,7 @@ a:link,
 a:visited,
 a:hover,
 a:active {
-  color: #d03c56;
+  color: var(--text-color);
   text-decoration: none;
 }
 *,

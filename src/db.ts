@@ -69,6 +69,7 @@ function createTables(db: Database): void {
       exercise_id INTEGER,
       num_successes INTEGER,
       num_shots INTEGER,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       foreign key (exercise_id) references exercises(id)
     );
   `);
@@ -136,4 +137,16 @@ export function loadExercises(db: Database): Exercise[] {
     cue: { x: row.cue_x, y: row.cue_y },
     object: { x: row.object_x, y: row.object_y },
   }));
+}
+
+export async function insertResult(
+  eid: number,
+  num_successes: number,
+  num_shots: number
+): Promise<void> {
+  const db = await getDatabase();
+  db.exec({
+    sql: "insert into results (exercise_id, num_successes, num_shots) values (?, ?, ?)",
+    bind: [eid, num_successes, num_shots],
+  });
 }

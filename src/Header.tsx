@@ -1,24 +1,36 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import config from "./config";
 
 function Header() {
-  const toggle = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.classList.toggle("active");
+  const hamburger = useRef<HTMLDivElement>(null);
+  const toggle = () => {
+    if (hamburger.current === null) return;
+    hamburger.current.classList.toggle("active");
+  };
+  const handleGoto = (path: string) => () => {
+    toggle();
+    window.location.href = path;
   };
   return (
     <Area>
-      <h1>BDRILL</h1>
+      <Link to="/">
+        <h1>BDRILL</h1>
+      </Link>
       <HamburgerMenu>
-        <div className="hamburger-menu animate-color-change" onClick={toggle}>
+        <div
+          ref={hamburger}
+          className="hamburger-menu animate-color-change"
+          onClick={toggle}
+        >
           <div className="hamburger-line"></div>
           <div className="hamburger-line"></div>
           <div className="hamburger-line"></div>
         </div>
         <ul className="menu">
-          <li>
-            <Link to="/results">成績</Link>
-          </li>
+          <li onClick={handleGoto(`/${config.basenamee}`)}>top</li>
+          <li onClick={handleGoto(`/${config.basenamee}/results`)}>成績</li>
         </ul>
       </HamburgerMenu>
     </Area>

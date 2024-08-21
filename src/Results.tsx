@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 function Results(): React.ReactElement {
-  const [results, setResults] = React.useState([]);
+  // const [results, setResults] = React.useState([]);
   return <Main>Results</Main>;
 }
 

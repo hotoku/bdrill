@@ -15,8 +15,8 @@ body {
   font-size: 1.2rem;
   font-family: "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
 
-  padding: var(--small-gap);
-  margin: var(--small-gap);
+  padding: 0;
+  margin: 0;
 }
 a:link,
 a:visited,

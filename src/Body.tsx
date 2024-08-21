@@ -37,5 +37,7 @@ export default Body;
 
 const Field = styled.div`
   display: flex;
-  calc(${poolDimension.width + controlWidth}px + var(--basic-gap));
+  margin: var(--small-gap);
+  padding: var(--small-gap);
+  width: calc(${poolDimension.width + controlWidth}px + var(--basic-gap));
 `;

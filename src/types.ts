@@ -8,8 +8,3 @@ export type Exercise = {
   cue: Position;
   object: Position;
 };
-
-export type ExerciseReord = {
-  success: number;
-  trial: number;
-};

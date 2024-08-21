@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import config from "./config";
 
-function Header() {
+function Header(): React.ReactElement {
   const hamburger = useRef<HTMLDivElement>(null);
   const toggle = () => {
     if (hamburger.current === null) return;
@@ -19,11 +19,7 @@ function Header() {
         <h1>BDRILL</h1>
       </Link>
       <HamburgerMenu>
-        <div
-          ref={hamburger}
-          className="hamburger-menu animate-color-change"
-          onClick={toggle}
-        >
+        <div ref={hamburger} className="hamburger-menu" onClick={toggle}>
           <div className="hamburger-line"></div>
           <div className="hamburger-line"></div>
           <div className="hamburger-line"></div>
@@ -46,11 +42,11 @@ const Area = styled.header`
   h1 {
     margin: 0;
   }
-    56px;
 `;
 
 const HamburgerMenu = styled.div`
   margin-left: auto;
+  padding-top: 1rem;
   /* ハンバーガーメニューのスタイル */
   .hamburger-menu {
     display: flex;
@@ -89,7 +85,9 @@ const HamburgerMenu = styled.div`
   .menu {
     display: none;
     background-color: #f0f0f0;
-    padding: 10px;
+    padding: 0 1rem;
+    margin-top: 1rem;
+    margin-bottom: 0;
   }
 
   ul {
@@ -99,5 +97,9 @@ const HamburgerMenu = styled.div`
   /* activeクラスが付与されたときのメニューのスタイル */
   .active + .menu {
     display: block;
+  }
+
+  .menu li:nth-of-type(n + 2) {
+    margin-top: 0.5rem;
   }
 `;

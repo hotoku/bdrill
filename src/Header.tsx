@@ -103,4 +103,11 @@ const HamburgerMenu = styled.div`
   .menu li:nth-of-type(n + 2) {
     margin-top: 0.5rem;
   }
+
+  /* hover時に手の形に */
+  .menu > li:hover {
+    cursor: pointer;
+    font-weight: bold;
+    transition: font-weight 0.3s;
+  }
 `;

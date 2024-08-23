@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Position } from "./types";
-import { insertResult } from "./db";
+import { insertResult } from "./db/queries";
 
 type ControlProps = {
   cueBall: Position;

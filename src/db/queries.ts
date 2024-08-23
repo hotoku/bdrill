@@ -1,55 +1,14 @@
-import sqlite3InitModule, {
-  Database,
-  Sqlite3Static,
-} from "@sqlite.org/sqlite-wasm";
-import { z } from "zod";
-import { generateAll } from "./drills";
-import { Exercise, Score } from "./types";
-
-const log = (...args: any[]) => console.log(...args); // eslint-disable-line
-const error = (...args: any[]) => console.error(...args); // eslint-disable-line
-
-let _sqlite3: Sqlite3Static | null = null;
-let _db: Database | null = null;
-
 /**
- * sqliteモジュールとDatabaseオブジェクトを管理する関数。
- * 毎回、オブジェクトを初期化するコストを省くために、グローバル変数にキャッシュするが、
- * これらを直接操作するのは、ensureDBだけ。
- * 他の関数は、ensureDBを使って、sqliteモジュールとDatabaseオブジェクトを取得する。
+ * DBへの問い合わせを行う関数をまとめたモジュール。
+ * 外部にexportする関数は、すべて非同期関数とする。
+ * 内部でのみ使用する関数は、同期関数とし、引数にDBオブジェクトを取る。
  */
-async function ensureDB(): Promise<[Database, Sqlite3Static]> {
-  if (_db === null || _sqlite3 === null) {
-    _sqlite3 = await sqlite3InitModule({
-      print: log,
-      printErr: error,
-    });
-    _db = new _sqlite3.oo1.DB("file:local?vfs=kvvfs", "c");
-  }
-  return [_db, _sqlite3];
-}
 
-export async function getBytes(): Promise<Uint8Array> {
-  const [db, sqlite3] = await ensureDB();
-  const ret = sqlite3.capi.sqlite3_js_db_export(db);
-  return ret;
-}
-
-export async function dbSize(): Promise<number> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, sqlite3] = await ensureDB();
-  return sqlite3.capi.sqlite3_js_kvvfs_size();
-}
-
-export function closeDB(): void {
-  _db?.close();
-  _db = null;
-}
-
-export async function getDatabase(): Promise<Database> {
-  const [db] = await ensureDB();
-  return db;
-}
+import { Database } from "@sqlite.org/sqlite-wasm";
+import { z } from "zod";
+import { generateAll } from "../drills";
+import { Exercise, Score } from "../types";
+import { getDatabase } from "./core";
 
 function createTables(db: Database): void {
   db.exec(`
@@ -100,21 +59,21 @@ function initExercises(db: Database): void {
   }
 }
 
-export async function initDB(): Promise<Database> {
+export async function initDB(): Promise<void> {
   const db = await getDatabase();
   createTables(db);
   const num = numExercises(db);
   if (num > 0) {
-    return db;
+    return;
   }
   await new Promise<void>((resolve) => {
     initExercises(db);
     resolve();
   });
-  return db;
 }
 
-export function loadExercises(db: Database): Exercise[] {
+export async function loadExercises(): Promise<Exercise[]> {
+  const db = await getDatabase();
   const ret = db.exec({
     sql: "select * from exercises",
     rowMode: "object",

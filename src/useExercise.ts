@@ -1,12 +1,14 @@
-import { initDB, loadExercises } from "./db";
+import { initDB, loadExercises } from "./db/queries";
 import { Exercise } from "./types";
 
 let exs: Exercise[] | null = null;
 
 function useExercises(): Exercise[] {
   if (exs === null) {
-    const prm = initDB().then((db) => {
-      exs = loadExercises(db);
+    const prm = initDB().then(() => {
+      loadExercises().then((exercises) => {
+        exs = exercises;
+      });
     });
     throw prm;
   } else {

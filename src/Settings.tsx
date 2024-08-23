@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { getBytes } from "./db";
+import { getBytes } from "./db/core";
 
 function Settings(): React.ReactElement {
   const handleDownload = async () => {

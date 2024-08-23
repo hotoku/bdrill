@@ -9,48 +9,46 @@ import { Exercise, Score } from "./types";
 const log = (...args: any[]) => console.log(...args); // eslint-disable-line
 const error = (...args: any[]) => console.error(...args); // eslint-disable-line
 
-let db: Database | null = null;
+let _sqlite3: Sqlite3Static | null = null;
+let _db: Database | null = null;
 
-function connectDB(sqlite3: Sqlite3Static): Database {
-  log("Running SQLite3 version", sqlite3.version.libVersion);
-  log(`DB size: ${sqlite3.capi.sqlite3_js_kvvfs_size()}`);
-  return new sqlite3.oo1.DB("file:local?vfs=kvvfs", "c");
+/**
+ * sqliteモジュールとDatabaseオブジェクトを管理する関数。
+ * 毎回、オブジェクトを初期化するコストを省くために、グローバル変数にキャッシュするが、
+ * これらを直接操作するのは、ensureDBだけ。
+ * 他の関数は、ensureDBを使って、sqliteモジュールとDatabaseオブジェクトを取得する。
+ */
+async function ensureDB(): Promise<[Database, Sqlite3Static]> {
+  if (_db === null || _sqlite3 === null) {
+    _sqlite3 = await sqlite3InitModule({
+      print: log,
+      printErr: error,
+    });
+    _db = new _sqlite3.oo1.DB("file:local?vfs=kvvfs", "c");
+  }
+  return [_db, _sqlite3];
+}
+
+export async function getBytes(): Promise<Uint8Array> {
+  const [db, sqlite3] = await ensureDB();
+  const ret = sqlite3.capi.sqlite3_js_db_export(db);
+  return ret;
 }
 
 export async function dbSize(): Promise<number> {
-  const sqlite3 = await sqlite3InitModule({
-    print: log,
-    printErr: error,
-  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, sqlite3] = await ensureDB();
   return sqlite3.capi.sqlite3_js_kvvfs_size();
 }
 
 export function closeDB(): void {
-  db?.close();
-  db = null;
+  _db?.close();
+  _db = null;
 }
 
 export async function getDatabase(): Promise<Database> {
-  if (db) {
-    return db;
-  }
-
-  try {
-    const sqlite3 = await sqlite3InitModule({
-      print: log,
-      printErr: error,
-    });
-    db = connectDB(sqlite3);
-
-    return db;
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      error(err.name, err.message);
-      throw err;
-    }
-  }
-
-  throw new Error("unknown error");
+  const [db] = await ensureDB();
+  return db;
 }
 
 function createTables(db: Database): void {
@@ -86,23 +84,20 @@ function numExercises(db: Database): number {
   return num;
 }
 
-function initExercises(db: Database): Promise<void> {
+function initExercises(db: Database): void {
   const exs = generateAll();
-  return new Promise<void>((resolve) => {
-    console.log("inserting exercises");
-    let i = 0;
-    for (const ex of exs) {
-      i++;
-      if (i % 100 === 0) {
-        console.log("inserting exercise", i);
-      }
-      db.exec({
-        sql: "insert into exercises (cue_x, cue_y, object_x, object_y) values (?, ?, ?, ?)",
-        bind: [ex.cue.x, ex.cue.y, ex.object.x, ex.object.y],
-      });
+  console.log("inserting exercises");
+  let i = 0;
+  for (const ex of exs) {
+    i++;
+    if (i % 100 === 0) {
+      console.log("inserting exercise", i);
     }
-    resolve();
-  });
+    db.exec({
+      sql: "insert into exercises (cue_x, cue_y, object_x, object_y) values (?, ?, ?, ?)",
+      bind: [ex.cue.x, ex.cue.y, ex.object.x, ex.object.y],
+    });
+  }
 }
 
 export async function initDB(): Promise<Database> {
@@ -112,7 +107,10 @@ export async function initDB(): Promise<Database> {
   if (num > 0) {
     return db;
   }
-  await initExercises(db);
+  await new Promise<void>((resolve) => {
+    initExercises(db);
+    resolve();
+  });
   return db;
 }
 

@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { getDatabase } from "./db";
+import { getBytes } from "./db";
 
 function Settings(): React.ReactElement {
   const handleDownload = async () => {
-    const db = await getDatabase();
+    const db = await getBytes();
+    console.log("bytes length: ", db.length);
   };
 
   return (

@@ -9,24 +9,25 @@ function Body(): React.ReactElement {
   const exs = useExercises();
   const [idx, setIdx] = useState(0);
   const { cue, object } = exs[idx];
-  const upadte = useCallback(() => {
+  const update = useCallback(() => {
     const n = Math.floor(Math.random() * exs.length);
     setIdx(n);
   }, [exs.length, setIdx]);
 
   useEffect(() => {
-    upadte();
-  }, [upadte]);
+    update();
+  }, [update]);
 
   return (
     <>
       <Field>
         <Table cueBall={cue} objectBall={object} />
         <Control
+          exerciseId={idx}
           cueBall={cue}
           objectBall={object}
           exIndex={idx}
-          update={upadte}
+          update={update}
         />
       </Field>
     </>

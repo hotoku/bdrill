@@ -4,6 +4,7 @@ import { Position } from "./types";
 import { insertResult } from "./db/queries";
 
 type ControlProps = {
+  exerciseId: number;
   cueBall: Position;
   objectBall: Position;
   exIndex: number;
@@ -13,13 +14,14 @@ type ControlProps = {
 const shotPerTrial = 5;
 
 function Control({
+  exerciseId,
   cueBall,
   objectBall,
   update,
 }: ControlProps): React.ReactElement {
   const [success, setSuccess] = useState(0);
   const handleSave = async () => {
-    insertResult(1, success, shotPerTrial);
+    insertResult(exerciseId, success, shotPerTrial);
   };
 
   return (

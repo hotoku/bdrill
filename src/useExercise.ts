@@ -1,3 +1,9 @@
+/**
+ * ExerciseをDBから取得するためのフック。
+ * レンダリング処理の途中で、Suspenseにプロミスを投げるために使われている。
+ * cf: https://zenn.dev/uhyo/books/react-concurrent-handson/viewer/data-fetching-2
+ */
+
 import { initDB, loadExercises } from "./db/queries";
 import { Exercise } from "./types";
 

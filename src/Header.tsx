@@ -27,6 +27,7 @@ function Header(): React.ReactElement {
         <ul className="menu">
           <li onClick={handleGoto(`/${config.basenamee}`)}>top</li>
           <li onClick={handleGoto(`/${config.basenamee}/results`)}>成績</li>
+          <li onClick={handleGoto(`/${config.basenamee}/settings`)}>設定</li>
         </ul>
       </HamburgerMenu>
     </Area>

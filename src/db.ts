@@ -4,7 +4,7 @@ import sqlite3InitModule, {
 } from "@sqlite.org/sqlite-wasm";
 import { z } from "zod";
 import { generateAll } from "./drills";
-import { Exercise } from "./types";
+import { Exercise, Score } from "./types";
 
 const log = (...args: any[]) => console.log(...args); // eslint-disable-line
 const error = (...args: any[]) => console.error(...args); // eslint-disable-line
@@ -149,4 +149,19 @@ export async function insertResult(
     sql: "insert into results (exercise_id, num_successes, num_shots) values (?, ?, ?)",
     bind: [eid, num_successes, num_shots],
   });
+}
+
+export async function loadScores(): Promise<Score[]> {
+  const db = await getDatabase();
+  db.exec({
+    sql: `
+select
+  *
+from
+  results
+    `,
+    rowMode: "object",
+    returnValue: "resultRows",
+  });
+  return [];
 }

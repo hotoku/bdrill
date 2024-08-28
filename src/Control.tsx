@@ -1,24 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Position } from "./types";
+import { Exercise } from "./types";
 import { insertResult } from "./db/queries";
 
 type ControlProps = {
-  exerciseId: number;
-  cueBall: Position;
-  objectBall: Position;
-  exIndex: number;
+  execerise: Exercise;
   update: () => void;
 };
 
 const shotPerTrial = 5;
 
-function Control({
-  exerciseId,
-  cueBall,
-  objectBall,
-  update,
-}: ControlProps): React.ReactElement {
+function Control({ execerise, update }: ControlProps): React.ReactElement {
+  const { id: exerciseId, cue: cueBall, object: objectBall } = execerise;
   const [success, setSuccess] = useState(0);
   const handleSave = async () => {
     insertResult(exerciseId, success, shotPerTrial);
@@ -38,6 +31,15 @@ function Control({
         <br />
         y={objectBall.y}
       </BallInfo>
+      <ExcInfo className="info">
+        穴番号: {execerise.hole}
+        <br />
+        角度: {Math.round((execerise.angle * 360) / (2 * Math.PI))}
+        <br />
+        穴距離: {Math.round(execerise.holeDistance * 100) / 100}
+        <br />
+        手玉距離: {Math.round(execerise.cueDistance * 100) / 100}
+      </ExcInfo>
       <RecordPanel className="info">
         <div>
           <RecordInput
@@ -90,3 +92,5 @@ const ButtonLine = styled.div`
 `;
 const SaveButton = styled.button``;
 const NextButton = styled.button``;
+
+const ExcInfo = styled.div``;

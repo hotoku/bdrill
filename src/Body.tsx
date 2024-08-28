@@ -22,13 +22,7 @@ function Body(): React.ReactElement {
     <>
       <Field>
         <Table cueBall={cue} objectBall={object} />
-        <Control
-          exerciseId={idx}
-          cueBall={cue}
-          objectBall={object}
-          exIndex={idx}
-          update={update}
-        />
+        <Control execerise={exs[idx]} update={update} />
       </Field>
     </>
   );

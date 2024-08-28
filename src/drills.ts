@@ -1,4 +1,4 @@
-import { Exercise, Position } from "./types";
+import { Exercise, holes, Position } from "./types";
 
 export function allGrids(): Position[] {
   const positions = [];
@@ -32,8 +32,52 @@ export function generateAll(): Omit<Exercise, "id">[] {
       if (aname(o.x, o.y)) {
         continue;
       }
-      ret.push({ cue: c, object: o });
+      const { hole, angle } = findHole(c, o);
+      ret.push({
+        cue: c,
+        object: o,
+        hole,
+        angle,
+        holeDistance: distance(o, holes[hole]),
+        cueDistance: distance(c, o),
+      });
     }
   }
   return ret;
+}
+
+function distance(p: Position, q: Position): number {
+  return Math.sqrt((p.x - q.x) ** 2 + (p.y - q.y) ** 2);
+}
+
+function findHole(
+  cue: Position,
+  object: Position
+): { hole: keyof typeof holes; angle: number } {
+  let max = -1;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let hole: any = 0;
+  for (const [key, value] of Object.entries(holes)) {
+    const ang = angle(cue, object, value);
+    if (ang > max) {
+      max = ang;
+      hole = Number(key);
+    }
+  }
+  return { hole: hole, angle: max };
+}
+
+function angle(a: Position, b: Position, c: Position): number {
+  const p = {
+    x: a.x - b.x,
+    y: a.y - b.y,
+  };
+  const q = {
+    x: c.x - b.x,
+    y: c.y - b.y,
+  };
+  const dot = p.x * q.x + p.y * q.y;
+  const abs = Math.sqrt(p.x ** 2 + p.y ** 2) * Math.sqrt(q.x ** 2 + q.y ** 2);
+  const cos = dot / abs;
+  return Math.acos(cos);
 }

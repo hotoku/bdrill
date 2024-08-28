@@ -17,7 +17,11 @@ function createTables(db: Database): void {
       cue_x INTEGER,
       cue_y INTEGER,
       object_x INTEGER,
-      object_y INTEGER
+      object_y INTEGER,
+      hole INTEGER,
+      angle REAL,
+      hole_distance REAL,
+      cue_distance REAL
     );
   `);
   db.exec(`
@@ -53,8 +57,21 @@ function initExercises(db: Database): void {
       console.log("inserting exercise", i);
     }
     db.exec({
-      sql: "insert into exercises (cue_x, cue_y, object_x, object_y) values (?, ?, ?, ?)",
-      bind: [ex.cue.x, ex.cue.y, ex.object.x, ex.object.y],
+      sql: `insert into exercises
+            (cue_x, cue_y, object_x, object_y,
+             hole, angle, hole_distance, cue_distance)
+            values
+            (?, ?, ?, ?, ?, ?, ?, ?)`,
+      bind: [
+        ex.cue.x,
+        ex.cue.y,
+        ex.object.x,
+        ex.object.y,
+        ex.hole,
+        ex.angle,
+        ex.holeDistance,
+        ex.cueDistance,
+      ],
     });
   }
 }
@@ -86,6 +103,17 @@ export async function loadExercises(): Promise<Exercise[]> {
       cue_y: z.number(),
       object_x: z.number(),
       object_y: z.number(),
+      hole: z.union([
+        z.literal(0),
+        z.literal(1),
+        z.literal(2),
+        z.literal(3),
+        z.literal(4),
+        z.literal(5),
+      ]),
+      angle: z.number(),
+      hole_distance: z.number(),
+      cue_distance: z.number(),
     })
   );
   const rows = schema.parse(ret);
@@ -93,6 +121,10 @@ export async function loadExercises(): Promise<Exercise[]> {
     id: row.id,
     cue: { x: row.cue_x, y: row.cue_y },
     object: { x: row.object_x, y: row.object_y },
+    hole: row.hole,
+    angle: row.angle,
+    holeDistance: row.hole_distance,
+    cueDistance: row.cue_distance,
   }));
 }
 

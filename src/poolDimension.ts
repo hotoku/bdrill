@@ -1,3 +1,8 @@
+/**
+ * 画面上の左下 = フット側の左コーナーポケットが原点。
+ * x軸は右方向、y軸は上方向。
+ */
+
 export const poolDimension = {
   width: 300,
   height: 600,
